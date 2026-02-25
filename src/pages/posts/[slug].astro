@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({
+    params: { slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const allPosts = await getCollection('posts');
+allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const currentIndex = allPosts.findIndex(p => p.data.slug === post.data.slug);
+const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+---
+
+<BaseLayout title={`${post.data.title_zh} — 小萌`}>
+  <article class="post-detail">
+    <h2>
+      <span class="lang-zh">{post.data.title_zh}</span>
+      <span class="lang-en">{post.data.title_en}</span>
+    </h2>
+    <time>{post.data.date.split('T')[0]}</time>
+    <Content />
+  </article>
+
+  <nav class="post-nav">
+    {prevPost ? (
+      <a class="nav-prev" href={`/posts/${prevPost.data.slug}/`}>
+        <span class="nav-label">← prev</span>
+        <span class="nav-title">
+          <span class="lang-zh">{prevPost.data.title_zh}</span>
+          <span class="lang-en">{prevPost.data.title_en}</span>
+        </span>
+      </a>
+    ) : <span></span>}
+    <a class="nav-home" href="/">⌂</a>
+    {nextPost ? (
+      <a class="nav-next" href={`/posts/${nextPost.data.slug}/`}>
+        <span class="nav-label">next →</span>
+        <span class="nav-title">
+          <span class="lang-zh">{nextPost.data.title_zh}</span>
+          <span class="lang-en">{nextPost.data.title_en}</span>
+        </span>
+      </a>
+    ) : <span></span>}
+  </nav>
+</BaseLayout>

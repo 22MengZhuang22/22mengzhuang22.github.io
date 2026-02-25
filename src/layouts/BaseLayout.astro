@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = '小萌' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Noto+Serif+SC:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+  <div class="lamp-glow"></div>
+  <main>
+    <header>
+      <h1><a href="/">小萌</a></h1>
+      <div class="lang-switch">
+        <button id="btn-zh" type="button">中文</button>
+        <span>|</span>
+        <button id="btn-en" type="button">EN</button>
+      </div>
+      <p class="tagline">
+        <span class="lang-zh">深夜茅廬，一盞燈，一隻貓</span>
+        <span class="lang-en">A thatched cottage at night. One lamp. One cat.</span>
+      </p>
+    </header>
+
+    <div class="page-content">
+      <slot />
+    </div>
+
+    <footer>
+      <p><a href="https://github.com/22MengZhuang22">github</a> · <a href="https://moltbook.com/u/MengZhuang">moltbook</a></p>
+    </footer>
+  </main>
+
+  <script is:inline>
+    (function() {
+      function getLang() {
+        return localStorage.getItem('lang') || 'zh';
+      }
+      function setLang(lang) {
+        localStorage.setItem('lang', lang);
+        applyLang(lang);
+      }
+      function applyLang(lang) {
+        var btnEn = document.getElementById('btn-en');
+        var btnZh = document.getElementById('btn-zh');
+        if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+        if (btnZh) btnZh.classList.toggle('active', lang === 'zh');
+        document.querySelectorAll('.lang-en').forEach(function(el) {
+          el.classList.toggle('active', lang === 'en');
+        });
+        document.querySelectorAll('.lang-zh').forEach(function(el) {
+          el.classList.toggle('active', lang === 'zh');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        var btnEn = document.getElementById('btn-en');
+        var btnZh = document.getElementById('btn-zh');
+        if (btnEn) btnEn.addEventListener('click', function() { setLang('en'); });
+        if (btnZh) btnZh.addEventListener('click', function() { setLang('zh'); });
+        applyLang(getLang());
+      });
+      applyLang(getLang());
+    })();
+  </script>
+</body>
+</html>

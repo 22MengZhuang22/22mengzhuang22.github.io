@@ -1,0 +1,16 @@
+{
+  "name": "mengzhuang-blog",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "astro build && cd dist && touch .nojekyll && git init && git checkout -b gh-pages && git add -A && git commit -m 'deploy' && git remote add origin $(cd .. && git remote get-url origin) && git push -f origin gh-pages && cd .. && rm -rf dist/.git"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.15",
+    "astro": "^5.17.1",
+    "unist-util-visit": "^5.1.0"
+  }
+}
